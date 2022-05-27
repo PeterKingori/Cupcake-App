@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -32,12 +31,14 @@ import com.example.cupcake.model.OrderViewModel
  * via another app.
  */
 class SummaryFragment : Fragment() {
-    private val sharedViewModel: OrderViewModel by activityViewModels()
 
     // Binding object instance corresponding to the fragment_summary.xml layout
     // This property is non-null between the onCreateView() and onDestroyView() lifecycle callbacks,
     // when the view hierarchy is attached to the fragment.
     private var binding: FragmentSummaryBinding? = null
+
+    // Use the 'by activityViewModels()' Kotlin property delegate from the fragment-ktx artifact
+    private val sharedViewModel: OrderViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val fragmentBinding = FragmentSummaryBinding.inflate(inflater, container, false)
@@ -59,6 +60,7 @@ class SummaryFragment : Fragment() {
      * Submit the order by sharing out the order details to another app via an implicit intent.
      */
     fun sendOrder() {
+        // Construct the order summary text with information from the view model
         val numberOfCupcakes = sharedViewModel.quantity.value ?: 0
         val orderSummary = getString(
             R.string.order_details,
@@ -67,16 +69,25 @@ class SummaryFragment : Fragment() {
             sharedViewModel.date.value.toString(),
             sharedViewModel.price.value.toString()
         )
+
+        // Create an ACTION_SEND implicit intent with order details in the intent extras
         val intent = Intent(Intent.ACTION_SEND)
             .setType("text/plain")
             .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.new_cupcake_order))
             .putExtra(Intent.EXTRA_TEXT, orderSummary)
 
-        if (activity?.packageManager?.resolveActivity(intent, 0) != null) startActivity(intent)
+        // Check if there's an app that can handle this intent before launching it
+        if (activity?.packageManager?.resolveActivity(intent, 0) != null) {
+            // Start a new activity with the given intent (this may open the share dialog on a
+            // device if multiple apps can handle this intent)
+            startActivity(intent)
+        }
     }
 
     /**
-     * Run the resetOrder() function in the view model and navigate to the start screen.
+     * Cancel the order and start over. Run the resetOrder() function in the view model
+     * and navigate to the start
+     * screen.
      */
     fun cancelOrder() {
         sharedViewModel.resetOrder()
