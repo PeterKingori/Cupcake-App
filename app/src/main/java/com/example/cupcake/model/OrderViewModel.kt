@@ -70,7 +70,7 @@ class OrderViewModel: ViewModel() {
     /**
      * Reset the MutableLiveData properties.
      */
-    private fun resetOrder() {
+    fun resetOrder() {
         _quantity.value = 0
         _flavor.value = ""
         _date.value = dateOptions[0]
