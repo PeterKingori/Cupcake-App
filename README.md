@@ -24,3 +24,11 @@ Getting Started
 2. Download the app.
 3. Import the app into Android Studio.
 4. Build and run the app.
+
+
+Screenshots
+-----------
+![image1](app/src/main/res/drawable/cupcakes1.jpg)&nbsp;
+![image2](app/src/main/res/drawable/cupcakes2.jpg)&nbsp;
+![image3](app/src/main/res/drawable/cupcakes3.jpg)&nbsp;
+![image4](app/src/main/res/drawable/cupcakes4.jpg)
